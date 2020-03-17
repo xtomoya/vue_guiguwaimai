@@ -13,7 +13,7 @@
           <!--</span>-->
         <!--</header>-->
 
-        <HeaderTop title="昌平区北七家宏福科技园(337省道北)">
+        <HeaderTop :title="address.name">
             <span class="header_search" slot="left">
                 <i class="iconfont icon-sousuo"></i>
             </span>
@@ -146,6 +146,7 @@
     import ShopList from '../../components/ShopList/ShopList'
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.min.css'
+    import {mapState} from 'vuex'
     export default {
         mounted(){
             //当页面上的元素挂载完毕之后创建一个swiper的对象
@@ -157,6 +158,9 @@
                     el: '.swiper-pagination',
                 },
             })
+        },
+        computed:{
+            ...mapState(['address'])
         },
         components: {
             HeaderTop,

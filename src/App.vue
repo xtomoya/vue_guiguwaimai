@@ -11,10 +11,11 @@
     export default {
         mounted(){
             // this.$store.dispatch('getAddress')
+            this.getUserInfo()
             this.getAddress()
         },
         methods:{
-            ...mapActions(['getAddress'])
+            ...mapActions(['getAddress','getUserInfo'])
         },
         components:{
             FooterGuide

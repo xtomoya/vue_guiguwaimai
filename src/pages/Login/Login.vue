@@ -40,7 +40,7 @@
                             </section>
                             <section class="login_message">
                                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                                <img class="get_verification" src="http://localhost:4000/captcha" alt="captcha" @click="getCaptcha" ref="captcha">
                             </section>
                         </section>
                     </div>
@@ -59,6 +59,7 @@
 
 <script>
     import AlertTip from '../../components/AlertTip/AlertTip'
+    import {reqSendCode,reqSmsLogin,reqPwdLogin} from '../../api'
     export default {
         data(){
           return{
@@ -84,52 +85,98 @@
         },
         methods:{
             //异步获取手机验证码
-            getCode(){
+            async getCode(){
                 //启动倒计时
                 if (!this.computeTime){
                     this.computeTime = 30
-                    const intervalId = setInterval(()=>{
+                    this.intervalId = setInterval(()=>{
                         this.computeTime--
                         if (this.computeTime<=0){
-                            clearInterval(intervalId)
+                            clearInterval(this.intervalId)
                         }
                     },1000)
                     //发送ajax请求，要求服务器向指定的手机号码发送验证码
+                    const result = await reqSendCode(this.phone)
+                    if (result.code === 1){
+                        //通过弹出框去提示错误信息
+                        this.showAlert1(result.msg)
+                        //停止倒计时
+                        if (this.computeTime){
+                            this.computeTime = 0
+                            clearInterval(this.intervalId)
+                            this.intervalId = undefined
+                        }
+                    }
                 }
 
             },
+            //这个是一个弹出框来显示一些信息。但是要注意，我在data中还有一个同名的变量，所以我用了
+            // 一个数字1来区别它们
             showAlert1(text){
                 this.showAlert = true
                 this.alertText = text
             },
             //异步登陆
-            login(){
+            async login(){
+                let result
                 //表单数据的验证，前台验证
                 if (this.loginWay){ //短信登陆
                     // const {rightPhone,phone,code} = this
                     if (!this.phone){
                         //手机号码不正确
                         this.showAlert1('手机号不正确')
+                        return
                     }else if (!this.rightPhone){
                         this.showAlert1('手机号不正确')
+                        return
                     } else if (!/^\d{6}$/.test(this.code)){
                         //验证必须是6位数字
                         this.showAlert1('验证码不正确')
+                        return
                     }
+                    //发送ajax请求进行短信登录
+                    result = await reqSmsLogin(this.phone,this.code)
+
                 } else {  //密码登陆
-                    // const {name,pwd,captcha} = this
+                    const {name,pwd,captcha} = this
                     if (!this.name){
                         this.showAlert1('用户名必须填')
+                        return
                     } else if (!this.pwd){
                         this.showAlert1('密码必须填')
+                        return
                     } else if (!this.captcha){
                         this.showAlert1('验证码必须填')
+                        return
                     }
+                    //发送ajax请求进行密码登录
+                    result = await reqPwdLogin({name,pwd,captcha})
+                }
+                //停止倒计时
+                if (this.computeTime){
+                    this.computeTime = 0
+                    clearInterval(this.intervalId)
+                    this.intervalId = undefined
+                }
+                if (result.code === 0 ){
+                    const user = result.data
+                    //将user保存到vuex中
+                    this.$store.dispatch('recordUser',user)
+                    //跳转到个人中心
+                    this.$router.replace('/profile')
+                } else{
+                    this.getCaptcha()
+                    const msg = result.msg
+                    this.showAlert1(msg)
                 }
             },
             closeTip(){
                 this.showAlert = false
                 this.alertText = ''
+            },
+            //点击图片可以获取新的一次性图片验证码
+            getCaptcha(){
+                this.$refs.captcha.src = "http://localhost:4000/captcha?tiem="+Date.now()
             },
         },
     }

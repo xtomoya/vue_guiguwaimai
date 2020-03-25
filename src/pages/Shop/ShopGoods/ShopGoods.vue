@@ -1,18 +1,18 @@
 <template>
     <div>
         <div class="goods">
-            <div class="menu-wrapper" ref="menuWrapper">
-                <ui>
-                    <li class="menu-item" v-for="(good,index) in goods" :key="index">
+            <div class="menu-wrapper">
+                <ul>
+                    <li class="menu-item" v-for="(good,index) in goods" :key="index" :class="{current:index===currentIndex}">
                         <span class="text bootom-border-1px">
                             <img :src="good.icon" v-if="good.icon" class="icon">
                             {{good.name}}
                         </span>
                     </li>
-                </ui>
+                </ul>
             </div>
-            <div class="foods-wrapper" ref="foodsWrapper">
-                <ui>
+            <div class="foods-wrapper">
+                <ul>
                     <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
                         <h1 class="title">{{good.name}}</h1>
                         <ul>
@@ -38,7 +38,7 @@
                             </li>
                         </ul>
                     </li>
-                </ui>
+                </ul>
             </div>
         </div>
     </div>
@@ -46,12 +46,29 @@
 
 <script>
     import {mapState} from 'vuex'
+    import BScroll from '@better-scroll/core'
     export default {
+        data(){
+            return{
+                scrollY:0,
+                tops:[],
+            }
+        },
         mounted() {
-            this.$store.dispatch('getShopGoods')
+            this.$store.dispatch('getShopGoods',()=>{
+                this.$nextTick(()=>{
+                    //列表显示之后创建一个滑动对象
+                    new BScroll('.menu-wrapper')
+                    new BScroll('.foods-wrapper')
+                })
+            })
         },
         computed:{
-            ...mapState(['goods'])
+            ...mapState(['goods']),
+            //计算得到当前分类的下标
+            currentIndex(){
+                return null
+            },
         },
     }
 </script>

@@ -8,6 +8,8 @@ import {
     RECEIVE_RATINGS,
     RECEIVE_GOODS,
     RECEIVE_INFO,
+    INCREMENT_FOOD_COUNT,
+    DECREMENT_FOOD_COUNT,
 } from './mutation-types'
 
 import {
@@ -100,4 +102,12 @@ export default {
             commit(RECEIVE_RATINGS,{ratings})
         }
     },
+    //同步更新购物车中的数量
+    updateFoodCount({commit},{isAdd,food}){
+        if (isAdd) {
+            commit(DECREMENT_FOOD_COUNT,{food})
+        }else {
+            commit(INCREMENT_FOOD_COUNT,{food})
+        }
+    }
 }

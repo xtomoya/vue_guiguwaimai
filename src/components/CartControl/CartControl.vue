@@ -1,8 +1,10 @@
 <template>
     <div class="cartcontrol">
-        <div class="iconfont iconminus-circle" v-if="food.count"></div>
+        <transition name="move">
+            <div class="iconfont iconminus-circle" v-if="food.count" @click.stop="updateFoodCount(true)"></div>
+        </transition>
         <div class="cart-count" v-if="food.count">{{food.count}}</div>
-        <div class="iconfont iconplus-circle"></div>
+        <div class="iconfont iconplus-circle" @click.stop="updateFoodCount(false)"></div>
     </div>
 </template>
 
@@ -10,7 +12,12 @@
     export default {
         props:{
             food:Object
-        }
+        },
+        methods:{
+            updateFoodCount(isAdd){
+                this.$store.dispatch('updateFoodCount',{isAdd,food:this.food})
+            },
+        },
     }
 </script>
 

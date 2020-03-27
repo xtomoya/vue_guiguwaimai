@@ -41,11 +41,15 @@ export default {
             food.count++
         } else {
             Vue.set(food,'count',1)
+            state.cartFoods.push(food)
         }
     },
     [DECREMENT_FOOD_COUNT] (state,{food}){
         if (food.count){
             food.count--
+            if (food.count === 0){
+                state.cartFoods.splice(state.cartFoods.indexOf(food),1)
+            }
         }
     },
 }

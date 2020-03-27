@@ -42,6 +42,7 @@
                     </li>
                 </ul>
             </div>
+            <ShopCart></ShopCart>
         </div>
         <Food :food="food" ref="sonFood"></Food>
     </div>
@@ -52,6 +53,7 @@
     import BScroll from '@better-scroll/core'
     import CartControl from '../../../components/CartControl/CartControl'
     import Food from '../../../components/Food/Food'
+    import ShopCart from '../../../components/ShopCart/ShopCart'
     export default {
         data(){
             return{
@@ -71,6 +73,7 @@
         components:{
             CartControl,
             Food,
+            ShopCart,
         },
         computed:{  //计算属性有两种情况下会执行，1、初始的时候会执行一次；2、相关的数据发生变化
             ...mapState(['goods']),

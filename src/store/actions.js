@@ -10,6 +10,7 @@ import {
     RECEIVE_INFO,
     INCREMENT_FOOD_COUNT,
     DECREMENT_FOOD_COUNT,
+    CLEAR_CART,
 } from './mutation-types'
 
 import {
@@ -109,5 +110,8 @@ export default {
         }else {
             commit(INCREMENT_FOOD_COUNT,{food})
         }
-    }
+    },
+    clearCart({commit}){
+        commit(CLEAR_CART)
+    },
 }

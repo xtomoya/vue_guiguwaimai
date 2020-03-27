@@ -11,6 +11,7 @@ import {
     RECEIVE_RATINGS,
     INCREMENT_FOOD_COUNT,
     DECREMENT_FOOD_COUNT,
+    CLEAR_CART,
 } from './mutation-types'
 export default {
     [RECEIVE_ADDRESS] (state,{address}){
@@ -51,5 +52,11 @@ export default {
                 state.cartFoods.splice(state.cartFoods.indexOf(food),1)
             }
         }
+    },
+    [CLEAR_CART] (state){
+        //重置food中的count为0
+        state.cartFoods.forEach(food => food.count = 0)
+        //重置cartFoods为空数组
+        state.cartFoods = []
     },
 }

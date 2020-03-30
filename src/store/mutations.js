@@ -12,6 +12,7 @@ import {
     INCREMENT_FOOD_COUNT,
     DECREMENT_FOOD_COUNT,
     CLEAR_CART,
+    RECEIVE_SEARCH_SHOPS,
 } from './mutation-types'
 export default {
     [RECEIVE_ADDRESS] (state,{address}){
@@ -37,6 +38,9 @@ export default {
     [RECEIVE_GOODS] (state,{goods}){
         state.goods = goods
     },
+    [RECEIVE_RATINGS](state, {ratings}) {
+        state.ratings = ratings
+    },
     [INCREMENT_FOOD_COUNT] (state,{food}){
         if (food.count){
             food.count++
@@ -58,5 +62,8 @@ export default {
         state.cartFoods.forEach(food => food.count = 0)
         //重置cartFoods为空数组
         state.cartFoods = []
+    },
+    [RECEIVE_SEARCH_SHOPS](state, {searchShops}) {
+        state.searchShops = searchShops
     },
 }
